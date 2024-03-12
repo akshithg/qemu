@@ -12,3 +12,6 @@ memory_notdirty_set_dirty(uint64_t vaddr) "0x%" PRIx64
 
 # translate-all.c
 translate_block(void *tb, uintptr_t pc, const void *tb_code) "tb:%p, pc:0x%"PRIxPTR", tb_code:%p"
+
+# my_pc_cr3_trace
+exec_tb_pc_cr3(void *tb, uintptr_t pc, uint16_t size, uintptr_t cr3) "tb:%p, pc:0x%"PRIxPTR", size:%u, cr3:0x%"PRIx64
