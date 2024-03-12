@@ -5,6 +5,8 @@
 exec_tb(void *tb, uintptr_t pc) "tb:%p pc=0x%"PRIxPTR
 exec_tb_nocache(void *tb, uintptr_t pc) "tb:%p pc=0x%"PRIxPTR
 exec_tb_exit(void *last_tb, unsigned int flags) "tb:%p flags=0x%x"
+# my_cr3_trace
+exec_tb_cr3(uintptr_t cr3, void *tb, uintptr_t pc, uint16_t size) "cr3:0x%"PRIx64" tb:%p pc:0x%"PRIxPTR" size:%u"
 
 # cputlb.c
 memory_notdirty_write_access(uint64_t vaddr, uint64_t ram_addr, unsigned size) "0x%" PRIx64 " ram_addr 0x%" PRIx64 " size %u"
@@ -12,6 +14,3 @@ memory_notdirty_set_dirty(uint64_t vaddr) "0x%" PRIx64
 
 # translate-all.c
 translate_block(void *tb, uintptr_t pc, const void *tb_code) "tb:%p, pc:0x%"PRIxPTR", tb_code:%p"
-
-# my_pc_cr3_trace
-exec_tb_pc_cr3(void *tb, uintptr_t pc, uint16_t size, uintptr_t cr3) "tb:%p, pc:0x%"PRIxPTR", size:%u, cr3:0x%"PRIx64
