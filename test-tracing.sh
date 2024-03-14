@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euxo pipefail
 
 # Environment variables
 # LINUXSRC - path to the Linux source code
@@ -21,7 +21,7 @@ function build_qemu() {
     echo "Building QEMU"
     mkdir -p "${QEMUBUILDDIR}"
     pushd "${QEMUBUILDDIR}"
-    "${QEMUSRC}"/configure --target-list=x86_64-softmmu
+    "${QEMUSRC}"/configure --target-list=x86_64-softmmu --enable-slirp # apt install libslirp-dev, for user mode networking
     make -j"$(nproc)"
     popd
 }
@@ -73,7 +73,10 @@ fi
 # Run QEMU with the kernel and initramfs with tracing enabled
 TRACE_FILE=/tmp/qemu-trace.log
 rm -f "${TRACE_FILE}"
-"${QEMUBIN}" -kernel "${KERNEL}" -initrd "${INITRAMFS}" -nographic -append "console=ttyS0 root=/dev/ram0" -trace exec_tb_cr3 -D /tmp/qemu-trace.log &
+"${QEMUBIN}" -nographic \
+    -device e1000,netdev=net0 -netdev user,id=net0 \
+    -kernel "${KERNEL}" -initrd "${INITRAMFS}" -append "console=ttyS0 root=/dev/ram0" \
+    -trace exec_tb_cr3 -D /tmp/qemu-trace.log &
 QEMU_PID=$!
 sleep 5
 kill -9 $QEMU_PID
